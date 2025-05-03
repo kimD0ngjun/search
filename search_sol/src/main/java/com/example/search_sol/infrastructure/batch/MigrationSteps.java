@@ -1,7 +1,11 @@
 package com.example.search_sol.infrastructure.batch;
 
+import co.elastic.clients.elasticsearch.core.BulkRequest;
+import com.example.search_sol.application.dto.ElasticSearchDTO;
 import com.example.search_sol.application.dto.MySqlDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
@@ -14,7 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor
-public class MigrationJobConfig {
+public class MigrationSteps {
 
     private static final int PAGE_SIZE = 1_000;
 
@@ -43,4 +47,13 @@ public class MigrationJobConfig {
         return provider;
     }
 
+    @Bean
+    public ItemProcessor<MySqlDTO, ElasticSearchDTO> koreanItemProcessor() {
+        return mysql -> new ElasticSearchDTO(
+                mysql.id(), mysql.entry(), mysql.type(), mysql.pos(), mysql.definition());
+    }
+
+//    @Bean
+//    public ItemWriter<ElasticSearchDTO> koreanItemWriter() {
+//    }
 }
