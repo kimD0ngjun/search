@@ -29,7 +29,7 @@ public class MigrationSteps {
     private final DataSource dataSource;
     private final ElasticsearchClient elasticsearchClient;
 
-    @Bean
+    @Bean(name = "koreanItemReader")
     public JdbcPagingItemReader<MySqlDTO> koreanItemReader(PagingQueryProvider koreanQueryProvider) {
         return new JdbcPagingItemReaderBuilder<MySqlDTO>()
                 .name("koreanItemReader")
@@ -52,7 +52,7 @@ public class MigrationSteps {
         return provider;
     }
 
-    @Bean
+    @Bean(name = "koreanItemProcessor")
     public ItemProcessor<MySqlDTO, MigrationDTO> koreanItemProcessor() {
         return mysql -> new MigrationDTO(
                 mysql.id(),
@@ -63,7 +63,7 @@ public class MigrationSteps {
                         ? "mysql에서 설명이 존재하지 않음" : mysql.definition());
     }
 
-    @Bean
+    @Bean(name = "koreanItemWriter")
     public ItemWriter<MigrationDTO> koreanItemWriter() {
         return items -> {
             BulkRequest.Builder bulkBuilder = new BulkRequest.Builder();
