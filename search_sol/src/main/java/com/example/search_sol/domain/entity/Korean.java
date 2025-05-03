@@ -30,4 +30,17 @@ public class Korean {
     // @Lob
     @Column(name = "definition", length = 500)
     private String definition;
+
+    /**
+     * 관리자가 사용할 단어 추가 정적 메소드
+     */
+    // 정적 팩토리 메소드 패턴
+    public static Korean of(String entry, String type, String pos, String definition) {
+        Korean korean = new Korean();
+        korean.entry = entry;
+        korean.type = type;
+        korean.pos = pos;
+        korean.definition = definition;
+        return korean;
+    }
 }
