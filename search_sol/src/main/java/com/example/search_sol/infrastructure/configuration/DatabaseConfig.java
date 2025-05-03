@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -27,7 +28,8 @@ import java.util.Map;
 )
 public class DatabaseConfig {
 
-    @Bean
+    @Primary
+    @Bean(name = "dataDbSource")
     @ConfigurationProperties(prefix = "spring.datasource-service")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
@@ -51,7 +53,7 @@ public class DatabaseConfig {
         return factoryBean;
     }
 
-    @Bean
+    @Bean(name = "jpaTransactionManager")
     public PlatformTransactionManager dataTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(dataEntityManager().getObject());
@@ -59,7 +61,7 @@ public class DatabaseConfig {
         return transactionManager;
     }
 
-    @Bean
+    @Bean(name = "jdbcTransactionManager")
     public PlatformTransactionManager jdbcTransactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }

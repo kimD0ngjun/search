@@ -26,14 +26,14 @@ public class MigrationSteps {
 
     private static final int PAGE_SIZE = 1_000;
 
-    private final DataSource dataSource;
+    private final DataSource dataDbSource;
     private final ElasticsearchClient elasticsearchClient;
 
     @Bean(name = "koreanItemReader")
     public JdbcPagingItemReader<MySqlDTO> koreanItemReader(PagingQueryProvider koreanQueryProvider) {
         return new JdbcPagingItemReaderBuilder<MySqlDTO>()
                 .name("koreanItemReader")
-                .dataSource(dataSource)
+                .dataSource(dataDbSource)
                 .queryProvider(koreanQueryProvider)
                 .rowMapper(new BeanPropertyRowMapper<>(MySqlDTO.class))
                 .pageSize(PAGE_SIZE)
@@ -43,7 +43,7 @@ public class MigrationSteps {
     @Bean
     public SqlPagingQueryProviderFactoryBean koreanQueryProvider() {
         SqlPagingQueryProviderFactoryBean provider = new SqlPagingQueryProviderFactoryBean();
-        provider.setDataSource(dataSource);
+        provider.setDataSource(dataDbSource);
         provider.setSelectClause("SELECT id, entry, type, pos, definition");
         provider.setFromClause("FROM koreans");
         // where절 생략 가능: 전체 가져올 경우
@@ -55,12 +55,12 @@ public class MigrationSteps {
     @Bean(name = "koreanItemProcessor")
     public ItemProcessor<MySqlDTO, MigrationDTO> koreanItemProcessor() {
         return mysql -> new MigrationDTO(
-                mysql.id(),
-                mysql.entry(),
-                mysql.type(),
-                mysql.pos(),
-                mysql.definition() == null || mysql.definition().isBlank()
-                        ? "mysql에서 설명이 존재하지 않음" : mysql.definition());
+                mysql.getId(),
+                mysql.getEntry(),
+                mysql.getType(),
+                mysql.getPos(),
+                mysql.getDefinition() == null || mysql.getDefinition().isBlank()
+                        ? "mysql에서 설명이 존재하지 않음" : mysql.getDefinition());
     }
 
     @Bean(name = "koreanItemWriter")

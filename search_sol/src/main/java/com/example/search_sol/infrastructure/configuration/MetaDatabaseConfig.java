@@ -13,8 +13,7 @@ import javax.sql.DataSource;
 @Configuration
 public class MetaDatabaseConfig {
 
-    @Primary
-    @Bean
+    @Bean(name = "metaDbSource")
     @ConfigurationProperties(prefix = "spring.datasource-meta")
     public DataSource metaSource() {
         return DataSourceBuilder.create().build();

@@ -20,7 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class MigrationJob {
 
     private final JobRepository jobRepository;
-    private final PlatformTransactionManager transactionManager;
+    private final PlatformTransactionManager jdbcTransactionManager;
     private final JdbcPagingItemReader<MySqlDTO> koreanItemReader;
     private final ItemProcessor<MySqlDTO, MigrationDTO> koreanItemProcessor;
     private final ItemWriter<MigrationDTO> koreanItemWriter;
@@ -34,7 +34,7 @@ public class MigrationJob {
     @Bean
     public Step migrationToEs() {
         return new StepBuilder("migrationToEsStep", jobRepository)
-                .<MySqlDTO, MigrationDTO>chunk(1_000, transactionManager)
+                .<MySqlDTO, MigrationDTO>chunk(1_000, jdbcTransactionManager)
                 .reader(koreanItemReader)
                 .processor(koreanItemProcessor)
                 .writer(koreanItemWriter).build();
