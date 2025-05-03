@@ -1,6 +1,6 @@
 package com.example.search_sol.application.dto;
 
-public record ElasticSearchDTO(
+public record MigrationDTO(
         Long id,
         String entry,
         String type,
