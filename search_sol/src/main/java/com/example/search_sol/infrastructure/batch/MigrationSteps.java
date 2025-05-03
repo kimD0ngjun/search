@@ -55,7 +55,12 @@ public class MigrationSteps {
     @Bean
     public ItemProcessor<MySqlDTO, MigrationDTO> koreanItemProcessor() {
         return mysql -> new MigrationDTO(
-                mysql.id(), mysql.entry(), mysql.type(), mysql.pos(), mysql.definition());
+                mysql.id(),
+                mysql.entry(),
+                mysql.type(),
+                mysql.pos(),
+                mysql.definition() == null || mysql.definition().isBlank()
+                        ? "mysql에서 설명이 존재하지 않음" : mysql.definition());
     }
 
     @Bean
