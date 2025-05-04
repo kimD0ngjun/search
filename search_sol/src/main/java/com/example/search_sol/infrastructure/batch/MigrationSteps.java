@@ -2,6 +2,7 @@ package com.example.search_sol.infrastructure.batch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.example.search_sol.application.dto.ElasticsearchDTO;
 import com.example.search_sol.application.dto.MigrationDTO;
 import com.example.search_sol.application.dto.MySqlDTO;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -67,29 +69,17 @@ public class MigrationSteps {
     public ItemWriter<MigrationDTO> koreanItemWriter() {
         return items -> {
             BulkRequest.Builder bulkBuilder = new BulkRequest.Builder();
-
-            for (MigrationDTO item : items) {
-                ElasticsearchDTO dto = ElasticsearchDTO.of(item);
-                bulkBuilder.operations(op -> op
-                        .index(idx -> idx
-                                .index("koreans")
-                                .id(String.valueOf(item.id()))
-                                .document(dto)
-                        )
-                );
-            }
-
-            var response = elasticsearchClient.bulk(bulkBuilder.build());
-
-            if (response.errors()) {
-                response.items().forEach(item -> {
-                    if (item.error() != null) {
-                        log.error("인덱싱 에러: {}", item.error().reason());
-                    }
-                });
-
-                throw new IllegalStateException("도큐먼트가 인덱싱에 실패함");
-            }
+            List<? extends MigrationDTO> dtoList = items.getItems();
+            List<BulkOperation> koreans = dtoList.stream().map(
+                    dto -> BulkOperation.of(b -> b.update(
+                            i -> i.index("koreans")
+                                    .action(a -> a
+                                            .doc(ElasticsearchDTO.of(dto))
+                                            .docAsUpsert(true))
+                                    .id(String.valueOf(dto.id())))) // upsert
+            ).toList();
+            bulkBuilder.operations(koreans);
+            elasticsearchClient.bulk(bulkBuilder.build());
         };
     }
 }
