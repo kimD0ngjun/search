@@ -2,6 +2,7 @@ package com.example.search_sol.infrastructure.batch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.example.search_sol.application.dto.ElasticsearchDTO;
 import com.example.search_sol.application.dto.MySqlDTO;
@@ -78,7 +79,13 @@ public class MigrationSteps {
                                     .id(String.valueOf(dto.getId())))) // upsert
             ).toList();
             bulkBuilder.operations(koreans);
-            elasticsearchClient.bulk(bulkBuilder.build());
+            BulkResponse response = elasticsearchClient.bulk(bulkBuilder.build());
+
+            // 현재는 로깅이지만 별개의 저장소에 id를 기억해두고, 해당 id를 바탕으로 이벤트 동기화에서 보상 트랜잭션 활용
+            if (response.errors())
+                response.items().stream()
+                        .filter(i -> i.error() != null)
+                        .forEach(i -> log.error("{}번 도큐먼트 인덱싱 실패: {}", i.id(), i.error().reason()));
         };
     }
 }
