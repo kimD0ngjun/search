@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface KoreanRepository {
     List<Korean> findAll();
-    Optional<Korean> findById(String id);
+    Optional<Korean> findById(Long id);
     Korean save(Korean korean);
 }

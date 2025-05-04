@@ -1,4 +1,4 @@
-package com.example.search_sol.presentation;
+package com.example.search_sol.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.JobParameters;
