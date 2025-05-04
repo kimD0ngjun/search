@@ -5,7 +5,7 @@ public record ElasticsearchDTO(
         String type,
         String pos,
         String definition) {
-    public static ElasticsearchDTO of(MigrationDTO dto) {
-        return new ElasticsearchDTO(dto.entry(), dto.type(), dto.pos(), dto.definition());
+    public static ElasticsearchDTO of(MySqlDTO dto) {
+        return new ElasticsearchDTO(dto.getEntry(), dto.getType(), dto.getPos(), dto.getDefinition());
     }
 }

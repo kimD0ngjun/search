@@ -1,6 +1,5 @@
 package com.example.search_sol.infrastructure.batch;
 
-import com.example.search_sol.application.dto.MigrationDTO;
 import com.example.search_sol.application.dto.MySqlDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -22,8 +21,8 @@ public class MigrationJob {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager jdbcTransactionManager;
     private final JdbcPagingItemReader<MySqlDTO> koreanItemReader;
-    private final ItemProcessor<MySqlDTO, MigrationDTO> koreanItemProcessor;
-    private final ItemWriter<MigrationDTO> koreanItemWriter;
+    private final ItemProcessor<MySqlDTO, MySqlDTO> koreanItemProcessor;
+    private final ItemWriter<MySqlDTO> koreanItemWriter;
 
     @Bean
     public Job migrationJobToEs() {
@@ -34,7 +33,7 @@ public class MigrationJob {
     @Bean
     public Step migrationToEs() {
         return new StepBuilder("migrationToEsStep", jobRepository)
-                .<MySqlDTO, MigrationDTO>chunk(1_000, jdbcTransactionManager)
+                .<MySqlDTO, MySqlDTO>chunk(1_000, jdbcTransactionManager)
                 .reader(koreanItemReader)
                 .processor(koreanItemProcessor)
                 .writer(koreanItemWriter).build();

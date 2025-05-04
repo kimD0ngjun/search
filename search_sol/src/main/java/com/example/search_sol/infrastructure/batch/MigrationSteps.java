@@ -4,7 +4,6 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.example.search_sol.application.dto.ElasticsearchDTO;
-import com.example.search_sol.application.dto.MigrationDTO;
 import com.example.search_sol.application.dto.MySqlDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +54,8 @@ public class MigrationSteps {
     }
 
     @Bean(name = "koreanItemProcessor")
-    public ItemProcessor<MySqlDTO, MigrationDTO> koreanItemProcessor() {
-        return mysql -> new MigrationDTO(
+    public ItemProcessor<MySqlDTO, MySqlDTO> koreanItemProcessor() {
+        return mysql -> new MySqlDTO(
                 mysql.getId(),
                 mysql.getEntry(),
                 mysql.getType(),
@@ -66,17 +65,17 @@ public class MigrationSteps {
     }
 
     @Bean(name = "koreanItemWriter")
-    public ItemWriter<MigrationDTO> koreanItemWriter() {
+    public ItemWriter<MySqlDTO> koreanItemWriter() {
         return items -> {
             BulkRequest.Builder bulkBuilder = new BulkRequest.Builder();
-            List<? extends MigrationDTO> dtoList = items.getItems();
+            List<? extends MySqlDTO> dtoList = items.getItems();
             List<BulkOperation> koreans = dtoList.stream().map(
                     dto -> BulkOperation.of(b -> b.update(
                             i -> i.index("koreans")
                                     .action(a -> a
                                             .doc(ElasticsearchDTO.of(dto))
                                             .docAsUpsert(true))
-                                    .id(String.valueOf(dto.id())))) // upsert
+                                    .id(String.valueOf(dto.getId())))) // upsert
             ).toList();
             bulkBuilder.operations(koreans);
             elasticsearchClient.bulk(bulkBuilder.build());
