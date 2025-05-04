@@ -16,7 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @RequiredArgsConstructor
-public class MigrationJob {
+public class BatchIndexJob {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager jdbcTransactionManager;

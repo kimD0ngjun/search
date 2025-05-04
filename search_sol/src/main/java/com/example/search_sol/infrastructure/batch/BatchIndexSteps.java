@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class MigrationSteps {
+public class BatchIndexSteps {
 
     private static final int PAGE_SIZE = 1_000;
 

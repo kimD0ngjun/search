@@ -15,7 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/batch")
 @RequiredArgsConstructor
-public class BatchController {
+public class BatchIndexController {
 
     private final JobLauncher jobLauncher;
     private final JobRegistry jobRegistry;
