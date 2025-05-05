@@ -1,6 +1,6 @@
 package com.example.search_sol.application.event;
 
-import com.example.search_sol.application.dto.SimpleKoreanUpdateDTO;
+import com.example.search_sol.application.dto.KoreanSimpleUpdateDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,5 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SimpleUpdateEvent {
     private Long id;
-    private SimpleKoreanUpdateDTO dto;
+    private KoreanSimpleUpdateDTO dto;
 }

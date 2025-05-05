@@ -2,7 +2,6 @@ package com.example.search_sol.domain.entity;
 
 import com.example.search_sol.application.dto.KoreanCreateDTO;
 import com.example.search_sol.application.dto.KoreanUpdateDTO;
-import com.example.search_sol.application.dto.SimpleKoreanUpdateDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

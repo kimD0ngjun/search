@@ -5,12 +5,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record SimpleKoreanUpdateDTO(
+public record KoreanSimpleUpdateDTO(
         String entry,
         String definition
 ) {
-    public static SimpleKoreanUpdateDTO create(SimpleKoreanUpdateRequest request) {
-        return SimpleKoreanUpdateDTO.builder()
+    public static KoreanSimpleUpdateDTO create(SimpleKoreanUpdateRequest request) {
+        return KoreanSimpleUpdateDTO.builder()
                 .entry(request.entry())
                 .definition(request.definition())
                 .build();

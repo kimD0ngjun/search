@@ -2,7 +2,7 @@ package com.example.search_sol.infrastructure.publisher;
 
 import com.example.search_sol.application.dto.KoreanCreateDTO;
 import com.example.search_sol.application.dto.KoreanUpdateDTO;
-import com.example.search_sol.application.dto.SimpleKoreanUpdateDTO;
+import com.example.search_sol.application.dto.KoreanSimpleUpdateDTO;
 import com.example.search_sol.application.event.CreateEvent;
 import com.example.search_sol.application.event.DeleteEvent;
 import com.example.search_sol.application.event.SimpleUpdateEvent;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SpringKoreanEventPublisherAdapter implements KoreanEventPublisher {
+public class TransactionalKoreanEventPublisherAdapter implements KoreanEventPublisher {
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -28,7 +28,7 @@ public class SpringKoreanEventPublisherAdapter implements KoreanEventPublisher {
     }
 
     @Override
-    public void publishSimpleUpdateEvent(Long id, SimpleKoreanUpdateDTO dto) {
+    public void publishSimpleUpdateEvent(Long id, KoreanSimpleUpdateDTO dto) {
         eventPublisher.publishEvent(new SimpleUpdateEvent(id, dto));
     }
 

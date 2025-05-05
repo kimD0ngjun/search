@@ -2,7 +2,7 @@ package com.example.search_sol.application.service;
 
 import com.example.search_sol.application.dto.KoreanCreateDTO;
 import com.example.search_sol.application.dto.KoreanUpdateDTO;
-import com.example.search_sol.application.dto.SimpleKoreanUpdateDTO;
+import com.example.search_sol.application.dto.KoreanSimpleUpdateDTO;
 import com.example.search_sol.domain.entity.Korean;
 import com.example.search_sol.infrastructure.publisher.KoreanEventPublisher;
 import com.example.search_sol.infrastructure.repository.KoreanRepository;
@@ -21,7 +21,10 @@ public class KoreanService {
     private final KoreanRepository koreanRepository;
     private final KoreanEventPublisher eventPublisher;
 
-    @Transactional(readOnly = true)
+    @Transactional(
+            readOnly = true,
+            transactionManager = "dataTransactionManager"
+    )
     public KoreanResponse getKorean(Long id) {
         return koreanRepository.findById(id)
                 .map(KoreanResponse::of)
@@ -30,7 +33,7 @@ public class KoreanService {
                 );
     }
 
-    @Transactional
+    @Transactional(transactionManager = "dataTransactionManager")
     public KoreanResponse createKorean(KoreanCreateDTO dto) {
         Korean korean = Korean.of(dto);
         korean = koreanRepository.save(korean);
@@ -40,7 +43,7 @@ public class KoreanService {
         return KoreanResponse.of(korean);
     }
 
-    @Transactional
+    @Transactional(transactionManager = "dataTransactionManager")
     public KoreanResponse updateKorean(Long id, KoreanUpdateDTO dto) {
         return koreanRepository.findById(id).map(k -> {
             k.update(dto);
@@ -52,8 +55,8 @@ public class KoreanService {
         );
     }
 
-    @Transactional
-    public KoreanResponse simpleUpdateKorean(Long id, SimpleKoreanUpdateDTO dto) {
+    @Transactional(transactionManager = "dataTransactionManager")
+    public KoreanResponse simpleUpdateKorean(Long id, KoreanSimpleUpdateDTO dto) {
         return koreanRepository.findById(id).map(k -> {
             k.update(dto.entry(), dto.definition());
             // 단어 일부 수정(entry, 설명) 이벤트 발행
@@ -64,7 +67,7 @@ public class KoreanService {
         );
     }
 
-    @Transactional
+    @Transactional(transactionManager = "dataTransactionManager")
     public KoreanResponse deleteKorean(Long id) {
         KoreanResponse response = koreanRepository.findById(id)
                 .map(KoreanResponse::of)

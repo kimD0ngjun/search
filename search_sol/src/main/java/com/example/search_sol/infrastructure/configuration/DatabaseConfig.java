@@ -53,7 +53,7 @@ public class DatabaseConfig {
         return factoryBean;
     }
 
-    @Bean(name = "jpaTransactionManager")
+    @Bean
     public PlatformTransactionManager dataTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(dataEntityManager().getObject());
