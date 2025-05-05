@@ -1,5 +1,8 @@
 package com.example.search_sol.domain.entity;
 
+import com.example.search_sol.application.dto.KoreanCreateDTO;
+import com.example.search_sol.application.dto.KoreanUpdateDTO;
+import com.example.search_sol.application.dto.SimpleKoreanUpdateDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,12 +38,23 @@ public class Korean {
      * 관리자가 사용할 단어 추가 정적 메소드
      */
     // 정적 팩토리 메소드 패턴
-    public static Korean of(String entry, String type, String pos, String definition) {
+    public static Korean of(KoreanCreateDTO dto) {
         Korean korean = new Korean();
-        korean.entry = entry;
-        korean.type = type;
-        korean.pos = pos;
-        korean.definition = definition;
+        korean.entry = dto.entry();
+        korean.type = dto.type();
+        korean.pos = dto.pos();
+        korean.definition = dto.definition();
         return korean;
+    }
+
+    public void update(String entry, String definition) {
+        this.entry = entry;
+        this.definition = definition;
+    }
+
+    public void update(KoreanUpdateDTO dto) {
+        update(dto.entry(), dto.definition());
+        this.type = dto.type();
+        this.pos = dto.pos();
     }
 }
