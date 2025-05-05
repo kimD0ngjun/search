@@ -7,5 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CreateEvent {
+    private Long id;
     private KoreanCreateDTO dto;
 }
