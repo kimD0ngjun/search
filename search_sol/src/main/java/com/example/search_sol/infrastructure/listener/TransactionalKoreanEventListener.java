@@ -18,10 +18,11 @@ import java.io.IOException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TransactionalKoreanEventListener {
+public class TransactionalKoreanEventListener implements KoreanEventListener {
 
     private final ElasticsearchClient elasticsearchClient;
 
+    @Override
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void listenCreateEvent(CreateEvent event) throws IOException {
         log.info("생성 이벤트 발생, {}", event.getId());
@@ -30,6 +31,7 @@ public class TransactionalKoreanEventListener {
                 .document(event.getDto()));
     }
 
+    @Override
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void listenUpdateEvent(UpdateEvent event) throws IOException {
         log.info("전체 업데이트 이벤트 발생, {}", event.getId());
@@ -40,6 +42,7 @@ public class TransactionalKoreanEventListener {
                 , KoreanUpdateDTO.class);
     }
 
+    @Override
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void listenSimpleUpdateEvent(SimpleUpdateEvent event) throws IOException {
         log.info("일부 업데이트 이벤트 발생, {}", event.getId());
@@ -50,6 +53,7 @@ public class TransactionalKoreanEventListener {
                 , KoreanSimpleUpdateDTO.class);
     }
 
+    @Override
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void listenDeleteEvent(DeleteEvent event) throws IOException {
         log.info("삭제 이벤트 발생, {}", event.getId());
