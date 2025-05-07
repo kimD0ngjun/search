@@ -139,7 +139,8 @@ public class KeywordSearchService {
                 definition = highlights.get("definition").getFirst();
             }
 
-            return new KeywordSearchResponse(id, entry, source.type(), source.pos(), definition);
+            return new KeywordSearchResponse(
+                    id, hit.score(), entry, source.type(), source.pos(), definition);
         }).toList();
     }
 }
