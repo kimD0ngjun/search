@@ -1,16 +1,13 @@
 package com.example.search_sol.presentation.controller;
 
 import com.example.search_sol.application.service.KeywordSearchService;
-import com.example.search_sol.presentation.dto.KeywordSearchRequest;
 import com.example.search_sol.presentation.dto.KeywordSearchResponse;
+import com.example.search_sol.presentation.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/search")
@@ -20,8 +17,10 @@ public class KeywordSearchController {
     private final KeywordSearchService keywordSearchService;
 
     @GetMapping
-    public ResponseEntity<List<KeywordSearchResponse>> searchKeyword(
-            @RequestBody KeywordSearchRequest request) {
-        return ResponseEntity.ok(keywordSearchService.searchKeyword(request.keyword()));
+    public ResponseEntity<PageResponse<KeywordSearchResponse>> searchKeyword(
+            @RequestParam String keyword,
+            Pageable pageable) {
+        Page<KeywordSearchResponse> page = keywordSearchService.searchKeyword(keyword, pageable);
+        return ResponseEntity.ok(PageResponse.from(page));
     }
 }

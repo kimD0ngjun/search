@@ -12,6 +12,9 @@ import com.example.search_sol.infrastructure.elasticsearch.ElasticsearchHandler;
 import com.example.search_sol.presentation.dto.KeywordSearchResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +42,7 @@ public class KeywordSearchService {
     private final ElasticsearchClient elasticsearchClient;
 
     @Transactional
-    public List<KeywordSearchResponse> searchKeyword(String keyword) {
+    public Page<KeywordSearchResponse> searchKeyword(String keyword, Pageable pageable) {
 
         // 쿼리 할당
         List<Query> queries = new ArrayList<>();
@@ -60,7 +63,8 @@ public class KeywordSearchService {
 
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("koreans")
-                .size(10)
+                .from((int) pageable.getOffset())
+                .size(pageable.getPageSize())
                 .query(q -> q.disMax(esQuery))
                 .highlight(highlight)
                 .build();
@@ -74,7 +78,12 @@ public class KeywordSearchService {
         }
 
         assert response != null;
-        return mapSearchResult(response.hits().hits());
+        List<KeywordSearchResponse> searchResult = mapSearchResult(response.hits().hits());
+
+        long totalHits = response.hits().total() ==
+                null ? searchResult.size() : response.hits().total().value();
+
+        return new PageImpl<>(searchResult, pageable, totalHits);
     }
 
     /**
