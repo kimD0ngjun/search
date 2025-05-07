@@ -90,3 +90,11 @@ button:hover:not(:disabled) {
 .search-bar {
     align-items: center;
 }
+
+.highlight {
+    background-color: #fffa8b; /* 노란색 배경 */
+    /*color: #c00000; !* 진한 붉은 글씨 *!*/
+    font-weight: bold;
+    /*padding: 2px 4px;*/
+    border-radius: 4px;
+}

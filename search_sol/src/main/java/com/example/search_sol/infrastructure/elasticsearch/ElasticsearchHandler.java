@@ -44,8 +44,8 @@ public class ElasticsearchHandler {
         Map<String, HighlightField> highlightFieldMap = new HashMap<>();
         fieldNames.forEach(e -> highlightFieldMap
                 .put(e, new HighlightField.Builder()
-                        .preTags("<strong>")
-                        .postTags("</strong>")
+                        .preTags("<span class=\"highlight\">")
+                        .postTags("</span>")
                         .build()));
 
         return new Highlight.Builder().fields(highlightFieldMap).build();
