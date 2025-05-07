@@ -12,7 +12,7 @@
 - `Python` : xls 원본 데이터 csv 컨버팅
 
 ## 구현 결과
-![May-07-2025 17-45-53](https://github.com/user-attachments/assets/29edd162-02ce-4883-829f-ea60202ce6dc)
+![final](https://github.com/user-attachments/assets/d1382085-73ab-44eb-bc6e-af7448158187)
 
 ## 트러블 슈팅
 
