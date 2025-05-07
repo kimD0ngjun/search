@@ -4,6 +4,9 @@ import co.elastic.clients.elasticsearch._types.query_dsl.MatchPhraseQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch.core.search.Highlight;
 import co.elastic.clients.elasticsearch.core.search.HighlightField;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.example.search_sol.application.dto.ElasticsearchDTO;
+import com.example.search_sol.presentation.dto.KeywordSearchResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,5 +49,34 @@ public class ElasticsearchHandler {
                         .build()));
 
         return new Highlight.Builder().fields(highlightFieldMap).build();
+    }
+
+    /**
+     * 하이라이트 매핑 DTO 처리
+     */
+    public static List<KeywordSearchResponse> mapSearchResult(List<Hit<ElasticsearchDTO>> hits) {
+        return hits.stream().map(hit -> {
+            assert hit.id() != null;
+            Long id = Long.parseLong(hit.id());
+
+//            log.info("id: {}", id);
+//            log.info("추천점수: {}", hit.score());
+            ElasticsearchDTO source = hit.source();
+            Map<String, List<String>> highlights = hit.highlight();
+
+            assert source != null;
+            String entry = source.entry(), definition = source.definition();
+
+            if (highlights.containsKey("entry")) {
+                entry = highlights.get("entry").getFirst();
+            }
+
+            if (highlights.containsKey("definition")) {
+                definition = highlights.get("definition").getFirst();
+            }
+
+            return new KeywordSearchResponse(
+                    id, hit.score(), entry, source.type(), source.pos(), definition);
+        }).toList();
     }
 }

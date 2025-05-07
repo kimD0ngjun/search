@@ -78,40 +78,12 @@ public class KeywordSearchService {
         }
 
         assert response != null;
-        List<KeywordSearchResponse> searchResult = mapSearchResult(response.hits().hits());
+        List<KeywordSearchResponse> searchResult =
+                ElasticsearchHandler.mapSearchResult(response.hits().hits());
 
         long totalHits = response.hits().total() ==
                 null ? searchResult.size() : response.hits().total().value();
 
         return new PageImpl<>(searchResult, pageable, totalHits);
-    }
-
-    /**
-     * 하이라이트 매핑 DTO 처리
-     */
-    private List<KeywordSearchResponse> mapSearchResult(List<Hit<ElasticsearchDTO>> hits) {
-        return hits.stream().map(hit -> {
-            assert hit.id() != null;
-            Long id = Long.parseLong(hit.id());
-
-//            log.info("id: {}", id);
-//            log.info("추천점수: {}", hit.score());
-            ElasticsearchDTO source = hit.source();
-            Map<String, List<String>> highlights = hit.highlight();
-
-            assert source != null;
-            String entry = source.entry(), definition = source.definition();
-
-            if (highlights.containsKey("entry")) {
-                entry = highlights.get("entry").getFirst();
-            }
-
-            if (highlights.containsKey("definition")) {
-                definition = highlights.get("definition").getFirst();
-            }
-
-            return new KeywordSearchResponse(
-                    id, hit.score(), entry, source.type(), source.pos(), definition);
-        }).toList();
     }
 }
