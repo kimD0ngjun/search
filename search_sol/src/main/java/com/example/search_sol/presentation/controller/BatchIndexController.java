@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/batch")
+@RequestMapping("/api/batch")
 @RequiredArgsConstructor
 public class BatchIndexController {
 
